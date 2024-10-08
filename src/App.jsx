@@ -55,6 +55,7 @@ function App() {
 
     try {
       const dateInSecs = Math.floor(new Date(deadlineRef.current.value).getTime() / 1000);
+      console.log(dateInSecs);
       const tx = await contract.setQuestion(questionRef.current.value, dateInSecs);
 
       await tx.wait();
@@ -163,19 +164,17 @@ function App() {
     evt.preventDefault();
     const contract = await createWriteContract();
 
-    const amount = ethers.parseEther(0.1 * 10 ** 18);
-
-    const id = toast.loading("Transaction in progress..");
+    const id2 = toast.loading("Transaction in progress..");
 
     try {
-      const tx = await contract.placeBet({ value: amount }, id, answerRef1.current.id,);
+      const tx = await contract.placeBet(Number(id), Number(answerRef1.current.id), { value: ethers.utils.parseEther("0.1") });
 
       await tx.wait();
       setTimeout(() => {
         window.location.href = "/";
       }, 10000);
 
-      toast.update(id, {
+      toast.update(id2, {
         render: "Transaction successfull",
         type: "success",
         isLoading: false,
@@ -184,7 +183,7 @@ function App() {
       });
     } catch (error) {
       console.log(error);
-      toast.update(id, {
+      toast.update(id2, {
         render: `${error.reason}`,
         type: "error",
         isLoading: false,
